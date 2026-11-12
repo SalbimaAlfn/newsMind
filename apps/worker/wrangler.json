@@ -1,0 +1,14 @@
+{
+  "name": "newsmind-worker",
+  "type": "javascript",
+  "main": "src/index.ts",
+  "compatibility_date": "2024-01-01",
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "newsmind",
+      "database_id": "b5a89a17-0eb5-4785-a492-dae1fe695b73"
+    }
+  ]
+}

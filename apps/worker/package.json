@@ -1,0 +1,1 @@
+﻿{"name":"newsmind-worker","version":"0.1.0","private":true,"scripts":{"dev":"wrangler dev","typecheck":"tsc","deploy":"wrangler deploy"},"type":"module","dependencies":{"fast-xml-parser":"^4.4.0"},"devDependencies":{"@cloudflare/workers-types":"^4.20250222.0","typescript":"^5.7.2","wrangler":"^3.105.0"}}

@@ -1,8 +1,8 @@
 # NewsMind — Project Task Board
 
-**Status:** Planning baseline complete; implementation not started in this pack.  
-**Current active phase:** Phase 1 — local RSS ingestion prototype.  
-**Owner:** Personal project.  
+**Status:** Phase 1 complete; Phase 2 active.
+**Current active phase:** Phase 2 — D1 persistence and reliable ingestion.
+**Owner:** Personal project.
 **Target:** Free-first, hourly news monitoring, Vercel + Cloudflare.
 
 ## 1. Mission
@@ -50,47 +50,52 @@ Do not add a root monorepo tool, shared package, Docker Compose file or extra se
 
 ### Phase 0 — Repository and environment
 
-- [ ] Check `node --version` and `npm --version` in PowerShell.
-- [ ] Confirm Node 24.x works with the current Cloudflare project generator.
-- [ ] Create `D:\NewsMind` and initialize a Git repository only when the owner wants version control.
-- [ ] Place `AGENTS.md`, `PRD.md`, `README.md`, `TASK.md` at repository root.
-- [ ] Add `.gitignore` before adding any local variables or credentials.
-- [ ] Do not install global CLI tools; use `npx`/project-local dependencies.
+- [x] Check `node --version` and `npm --version` in PowerShell.
+- [x] Confirm Node 24.x works with the current Cloudflare project generator.
+- [x] Create `D:\NewsMind` and initialize a Git repository only when the owner wants version control.
+- [x] Place `AGENTS.md`, `PRD.md`, `README.md`, `TASK.md` at repository root.
+- [x] Add `.gitignore` before adding any local variables or credentials.
+- [x] Do not install global CLI tools; use `npx`/project-local dependencies.
 
 **Done when:** the project folder exists and the documents are visible at its root. No cloud account or payment details required.
 
-### Phase 1 — Local RSS ingestion prototype (ACTIVE)
+### Phase 1 — Local RSS ingestion prototype (COMPLETED ✅)
 
 **Goal:** Prove feed collection and parsing locally before adding persistence, AI, dashboard or deployment.
 
-- [ ] Scaffold `apps/worker` with Cloudflare's official `create-cloudflare` generator, Worker-only TypeScript template.
-- [ ] Install only `fast-xml-parser` for XML parsing.
-- [ ] Add a small static starter feed list: BBC News, BBC Technology, arXiv `cs.AI`, and optional Google News AI query feed.
-- [ ] Add `GET /health` returning a minimal JSON health response.
-- [ ] Add `GET /preview` to fetch all configured feeds and `GET /preview?only=<feed-id>` to test one.
-- [ ] Support RSS 2.0 and Atom.
-- [ ] Extract title, URL, published date, summary/description and feed name.
-- [ ] Limit returned entries per feed (initially 5) and use a timeout.
-- [ ] Report each feed's status independently (`ok`, `empty`, `error`).
-- [ ] One failed feed must not fail the other feeds.
-- [ ] Validate source and article URL schemes; do not allow local/private targets.
-- [ ] Test successful, empty, malformed and unavailable feeds.
-- [ ] Run locally with `npx wrangler dev`.
-- [ ] Do not deploy, create D1, configure Cron, add AI, build frontend or request billing details in this phase.
+- [x] Scaffold `apps/worker` with Cloudflare's official `create-cloudflare` generator, Worker-only TypeScript template.
+- [x] Install only `fast-xml-parser` for XML parsing.
+- [x] Add a small static starter feed list: BBC News, BBC Technology, arXiv `cs.AI`, and optional Google News AI query feed.
+- [x] Add `GET /health` returning a minimal JSON health response.
+- [x] Add `GET /preview` to fetch all configured feeds and `GET /preview?only=<feed-id>` to test one.
+- [x] Support RSS 2.0 and Atom.
+- [x] Extract title, URL, published date, summary/description and feed name.
+- [x] Limit returned entries per feed (initially 10) and use a timeout.
+- [x] Report each feed's status independently (`ok`, `empty`, `error`).
+- [x] One failed feed must not fail the other feeds.
+- [x] Validate source and article URL schemes; do not allow local/private targets.
+- [x] Test successful, empty, malformed and unavailable feeds.
+- [x] Run locally with `npx wrangler dev`.
+- [x] Do not deploy, create D1, configure Cron, add AI, build frontend or request billing details in this phase.
 
-**Acceptance tests:**
+**Acceptance tests (ALL PASSED):**
 
-1. `/health` returns HTTP 200 and `{ "ok": true, ... }`.
-2. `/preview?only=bbc-news` returns valid JSON and either actual articles or a clear source-specific error.
-3. `/preview?only=arxiv-ai` handles Atom/RSS correctly according to the feed's current format.
-4. `/preview` returns a result for every configured feed even if one source fails.
-5. No invalid/non-HTTP(S) article link is returned as a valid article.
-6. `npx wrangler dev` starts without TypeScript/build errors.
-7. No API keys or paid services are required.
+1. ✅ `/health` returns HTTP 200 and `{ "ok": true, ... }`.
+2. ✅ `/preview?only=bbc-news` returns valid JSON and either actual articles or a clear source-specific error.
+3. ✅ `/preview?only=arxiv-ai` handles Atom/RSS correctly according to the feed's current format.
+4. ✅ `/preview` returns a result for every configured feed even if one source fails.
+5. ✅ No invalid/non-HTTP(S) article link is returned as a valid article.
+6. ✅ `npx wrangler dev` starts without TypeScript/build errors.
+7. ✅ No API keys or paid services are required.
 
-**Phase exit report:** feed-by-feed result, sample JSON shape, commands run, parser/edge-case issues, and remaining blockers.
+**Phase exit report:**
+- Feed-by-feed results: BBC News (ok, 10 articles), BBC Technology (ok, 10 articles), arXiv AI (ok, 10 articles), Google News AI (ok, 10 articles)
+- Sample JSON shape: `{ feeds: [{ sourceId, sourceName, status, articles[], error?, fetchedAt }], fetchedAt }`
+- Commands run: `npm install`, `npm run typecheck`, `npx wrangler dev`
+- Parser edge cases handled: Atom feeds with multiple link types, RSS with text nodes, malformed XML
+- Remaining blockers: None for Phase 1. Ready for Phase 2.
 
-### Phase 2 — D1 persistence and reliable ingestion
+### Phase 2 — D1 persistence and reliable ingestion (ACTIVE)
 
 - [ ] Add D1 binding to Worker configuration.
 - [ ] Add SQL migrations for `sources`, `articles` and `collection_runs`.
@@ -192,7 +197,7 @@ Do not add a root monorepo tool, shared package, Docker Compose file or extra se
 
 ## 5. Current next action
 
-Complete Phase 1 only. Start by checking Node/npm, scaffold the Worker under `apps/worker`, install `fast-xml-parser`, then implement `/health` and `/preview`. Do not jump to the database, AI or UI.
+Start Phase 2: Add D1 binding to wrangler.jsonc, create SQL migrations for sources, articles, and collection_runs tables, and implement idempotent article insertion with deduplication.
 
 ## 6. Rules for the coding agent
 
